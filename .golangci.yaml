@@ -1,0 +1,119 @@
+run:
+  go: '1.19'
+  timeout: 5m
+  tests: false
+
+linters:
+  disable-all: true
+  enable:
+    - asasalint
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - containedctx
+    - contextcheck
+    - decorder
+    - dupl
+    - dupword
+    - durationcheck
+    - errcheck
+    - errchkjson
+    - errname
+    - errorlint
+    - execinquery
+    - exportloopref
+    - forbidigo
+    - forcetypeassert
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - godot
+    - gofmt
+    - gofumpt
+    - goheader
+    - goimports
+    - gomodguard
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - grouper
+    - importas
+    - ineffassign
+    - interfacebloat
+    - loggercheck
+    - makezero
+    - nakedret
+    - nestif
+    - nilerr
+    - nilnil
+    - noctx
+    - nolintlint
+    - nonamedreturns
+    - nosprintfhostport
+    - paralleltest
+    - predeclared
+    - promlinter
+    - reassign
+    - revive
+    - rowserrcheck
+    - sqlclosecheck
+    - staticcheck
+    - stylecheck
+    - tenv
+    - testableexamples
+    - thelper
+    - tparallel
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - usestdlibvars
+    - wastedassign
+    - whitespace
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+
+  gocritic:
+    disabled-checks:
+      - hugeParam
+      - rangeValCopy
+      - whyNoLint
+    enabled-tags:
+      - diagnostic
+      - performance
+      - style
+
+  gofumpt:
+    lang-version: '1.19'
+    module-path: github.com/PentoHQ/pento
+    extra-rules: true
+
+  govet:
+    check-shadowing: true
+    enable-all: true
+    disable:
+      - fieldalignment
+
+  stylecheck:
+    go: '1.19'
+
+  nestif:
+    min-complexity: 6
+
+issues:
+  exclude:
+    - '.*underscore.*'
+    - composite
+    - 'a blank import.*'
+
+  exclude-rules:
+    - linters:
+        - govet
+      text: 'shadow: declaration of "err" shadows declaration'
+    - linters:
+        - gocritic
+      text: "timeCmpSimplify:"
