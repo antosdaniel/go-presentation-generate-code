@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  grpc:
+    build:
+      dockerfile: ./build/grpc/Dockerfile
+      target: dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/src/
