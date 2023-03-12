@@ -1,0 +1,14 @@
+output = "internal/db/models"
+wipe = true
+no-hooks = true
+no-tests = true
+
+[psql]
+dbname = "payroll"
+host = "localhost"
+port = 5432
+user = "postgres"
+pass = "secret123"
+sslmode = "disable"
+schema = "public"
+blacklist = ["schema_migrations"]
