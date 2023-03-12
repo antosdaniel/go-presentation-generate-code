@@ -26,7 +26,6 @@ message AddPayslipRequest {
 
   int32 gross_pay = 4;
   int32 tax = 5;
-  int32 net_pay = 6;
 }
 
 message AddPayslipResponse {

@@ -1,0 +1,22 @@
+GRPC localhost:8000/payroll.v1.PayrollService/AddPayroll
+
+{
+  "tenant_id": "154b71e0-2f4b-40c4-8f3a-b98962d41c72",
+  "payday": "2023-01-01"
+}
+
+###
+
+GRPC localhost:8000/payroll.v1.PayrollService/AddPayslip
+
+{
+  "payroll_id": "806950d6-316b-41fb-9e62-a59b3aa952a9",
+  "gross_pay": 105000,
+  "tax": 8000
+}
+
+###
+
+GRPC localhost:8000/payroll.v1.PayrollService/GetPayroll
+
+###

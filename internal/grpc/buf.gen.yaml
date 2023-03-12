@@ -1,0 +1,12 @@
+version: v1
+managed:
+  enabled: true
+  go_package_prefix:
+    default: github.com/antosdaniel/go-presentation-generate-code/internal/grpc
+plugins:
+  - plugin: buf.build/protocolbuffers/go:v1.28.1
+    out: internal/grpc
+    opt: paths=source_relative
+  - plugin: buf.build/bufbuild/connect-go
+    out: internal/grpc
+    opt: paths=source_relative

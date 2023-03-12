@@ -1,6 +1,11 @@
 BUF_VERSION := "1.12.0"
 BUF_BIN := "/usr/local/bin"
 
+.PHONY: dev
+dev:
+	@docker compose down && docker compose up
+
+.PHONY: install
 install:
 	@printf "Installing buf...\n"
 	# You might need to run it with sudo
@@ -14,19 +19,28 @@ install:
 	@printf "\nInstalling compile daemon...\n"
 	@go install -mod=readonly github.com/githubnemo/CompileDaemon@v1.4.0
 
+.PHONY: lint
 lint:
 	@printf "Linting protos...\n"
-	@buf lint
+	@buf lint --config internal/grpc/buf.yaml
 
 	@printf "Linting Go...\n"
 	@golangci-lint run
 
+.PHONY: generate
 generate:
 	@printf "Generating protos...\n"
-	@buf generate
+	@buf generate --template internal/grpc/buf.gen.yaml
+
+	@printf "Formatting files...\n"
+	@golangci-lint run --fix
+
+	@printf "Refreshing Go modules...\n"
+	@go mod tidy && go mod vendor
 
 GRPC_BINARY := "bin/grpc"
 
+.PHONY: start-grpc
 start-grpc:
 	@CompileDaemon \
 		-build="go build -o ${GRPC_BINARY} cmd/grpc/main.go" \

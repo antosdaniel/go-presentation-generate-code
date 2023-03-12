@@ -1,5 +1,5 @@
 run:
-  go: '1.19'
+  go: '1.20'
   timeout: 5m
   tests: false
 
@@ -55,7 +55,6 @@ linters:
     - predeclared
     - promlinter
     - reassign
-    - revive
     - rowserrcheck
     - sqlclosecheck
     - staticcheck
@@ -88,7 +87,7 @@ linters-settings:
       - style
 
   gofumpt:
-    lang-version: '1.19'
+    lang-version: '1.20'
     module-path: github.com/PentoHQ/pento
     extra-rules: true
 
@@ -99,7 +98,7 @@ linters-settings:
       - fieldalignment
 
   stylecheck:
-    go: '1.19'
+    go: '1.20'
 
   nestif:
     min-complexity: 6
