@@ -10,22 +10,22 @@ import (
 	payrollv1 "github.com/antosdaniel/go-presentation-generate-code/internal/grpc/payroll/v1"
 	"github.com/antosdaniel/go-presentation-generate-code/internal/grpc/payroll/v1/payrollv1connect"
 	connect_go "github.com/bufbuild/connect-go"
-	"golang.org/x/net/http2"
-	"golang.org/x/net/http2/h2c"
 )
 
 var port = getOptionalEnv("PORT", "8000")
 
 const address = "0.0.0.0"
 
-func StartServer() error {
+func Setup() *http.Server {
 	mux := http.NewServeMux()
 	path, handler := payrollv1connect.NewPayrollServiceHandler(&payrollServiceServer{})
 	mux.Handle(path, handler)
-	return http.ListenAndServe( //nolint:gosec
-		fmt.Sprintf("%s:%s", address, port),
-		h2c.NewHandler(mux, &http2.Server{}),
-	)
+
+	addr := fmt.Sprintf("%s:%s", address, port)
+	return &http.Server{ //nolint:gosec
+		Addr:    addr,
+		Handler: handler,
+	}
 }
 
 type payrollServiceServer struct{}

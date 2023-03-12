@@ -4,7 +4,39 @@ services:
     build:
       dockerfile: ./build/grpc/Dockerfile
       target: dev
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - "8000:8000"
     volumes:
       - ./:/src/
+
+  db:
+    image: "postgres:15.2-alpine"
+    environment:
+      POSTGRES_DB: payroll
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret123
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 3s
+      timeout: 60s
+      retries: 10
+      start_period: 5s
+    ports:
+      - "5432:5432"
+
+  migrate:
+    build:
+      dockerfile: build/migrate/Dockerfile
+      target: builder
+    environment:
+      DB_URL: "postgres://postgres:secret123@db:5432/payroll?sslmode=disable"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./db/migrations/:/db/migrations/
+      - ./db/seeds/:/db/seeds/
+      - ./db/run-dev-migrations:/db/run-dev-migrations

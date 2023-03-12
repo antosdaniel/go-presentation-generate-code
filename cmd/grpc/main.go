@@ -13,11 +13,14 @@ func main() {
 	defer cancel()
 
 	shutdown.SetupGraceful(ctx, cancel)
+	server := grpc.Setup()
+	defer server.Shutdown(ctx)
+
 	log.Println("starting server...")
-	err := grpc.StartServer()
+	err := server.ListenAndServe()
 	if err != nil {
 		log.Fatalf("unable to start gRPC server: %v", err) //nolint:gocritic
 	}
 
-	<-ctx.Done() // wait for shutdown signal
+	<-ctx.Done() // Wait for shutdown signal.
 }
