@@ -6,6 +6,10 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/antosdaniel/go-presentation-generate-code/internal/db/repos"
+
+	"github.com/antosdaniel/go-presentation-generate-code/internal/db/repos"
+
 	"github.com/antosdaniel/go-presentation-generate-code/internal/grpc/payroll/v1/payrollv1connect"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -19,7 +23,7 @@ var port = getOptionalEnv("PORT", "8000")
 
 func New(db *sql.DB) *http.Server {
 	mux := http.NewServeMux()
-	path, handler := payrollv1connect.NewPayrollServiceHandler(&payrollServiceServer{db})
+	path, handler := payrollv1connect.NewPayrollServiceHandler(&payrollServiceServer{repos.NewPayrollRepo(db)})
 	mux.Handle(path, handler)
 
 	addr := fmt.Sprintf("%s:%s", address, port)

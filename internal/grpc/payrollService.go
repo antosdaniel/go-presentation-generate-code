@@ -2,7 +2,6 @@ package grpc
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"log"
 	"time"
@@ -11,11 +10,16 @@ import (
 	payrollv1 "github.com/antosdaniel/go-presentation-generate-code/internal/grpc/payroll/v1"
 	connect_go "github.com/bufbuild/connect-go"
 	"github.com/google/uuid"
-	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
 type payrollServiceServer struct {
-	db *sql.DB
+	payrollRepo payrollRepo
+}
+
+type payrollRepo interface {
+	Create(ctx context.Context, payrollID, tenantID string, payday time.Time) error
+	AddPayslip(ctx context.Context, payslipID, payrollID string, grossPay, tax, netPay int) error
+	Find(ctx context.Context, payrollID string) (*models.Payroll, models.PayslipSlice, error)
 }
 
 func (s *payrollServiceServer) AddPayroll(ctx context.Context, request *connect_go.Request[payrollv1.AddPayrollRequest]) (*connect_go.Response[payrollv1.AddPayrollResponse], error) {
@@ -35,19 +39,14 @@ func (s *payrollServiceServer) AddPayroll(ctx context.Context, request *connect_
 		id = uuid.NewString()
 	}
 
-	payroll := models.Payroll{
-		ID:       id,
-		TenantID: request.Msg.TenantId,
-		Payday:   payday,
-	}
-	err = payroll.Insert(ctx, s.db, boil.Infer())
+	err = s.payrollRepo.Create(ctx, id, request.Msg.TenantId, payday)
 	if err != nil {
-		return nil, fmt.Errorf("could not insert payroll: %w", err)
+		return nil, err
 	}
 
 	return &connect_go.Response[payrollv1.AddPayrollResponse]{
 		Msg: &payrollv1.AddPayrollResponse{
-			PayrollId: payroll.ID,
+			PayrollId: id,
 		},
 	}, nil
 }
@@ -55,42 +54,30 @@ func (s *payrollServiceServer) AddPayroll(ctx context.Context, request *connect_
 func (s *payrollServiceServer) AddPayslip(ctx context.Context, request *connect_go.Request[payrollv1.AddPayslipRequest]) (*connect_go.Response[payrollv1.AddPayslipResponse], error) {
 	log.Printf("add payslip to payroll %q", request.Msg.PayrollId)
 
-	payrollID := request.Msg.PayrollId
-	payroll, err := models.FindPayroll(ctx, s.db, payrollID)
+	payslipID := uuid.NewString()
+	err := s.payrollRepo.AddPayslip(
+		ctx,
+		payslipID,
+		request.Msg.PayrollId,
+		int(request.Msg.GrossPay),
+		int(request.Msg.Tax),
+		int(request.Msg.GrossPay-request.Msg.Tax),
+	)
 	if err != nil {
-		return nil, fmt.Errorf("could not find payroll %q: %w", payrollID, err)
-	}
-
-	payslip := models.Payslip{
-		ID:        uuid.NewString(),
-		TenantID:  payroll.TenantID,
-		PayrollID: payroll.ID,
-		GrossPay:  int(request.Msg.GrossPay),
-		Tax:       int(request.Msg.Tax),
-		NetPay:    int(request.Msg.GrossPay - request.Msg.Tax),
-	}
-	err = payslip.Insert(ctx, s.db, boil.Infer())
-	if err != nil {
-		return nil, fmt.Errorf("could not insert payslip: %w", err)
+		return nil, err
 	}
 
 	return &connect_go.Response[payrollv1.AddPayslipResponse]{
 		Msg: &payrollv1.AddPayslipResponse{
-			PayslipId: payslip.ID,
+			PayslipId: payslipID,
 		},
 	}, nil
 }
 
 func (s *payrollServiceServer) GetPayroll(ctx context.Context, request *connect_go.Request[payrollv1.GetPayrollRequest]) (*connect_go.Response[payrollv1.GetPayrollResponse], error) {
-	payrollID := request.Msg.PayrollId
-	payroll, err := models.FindPayroll(ctx, s.db, payrollID)
+	payroll, payslips, err := s.payrollRepo.Find(ctx, request.Msg.PayrollId)
 	if err != nil {
-		return nil, fmt.Errorf("could not find payroll %q: %w", payrollID, err)
-	}
-
-	payslips, err := payroll.Payslips().All(ctx, s.db)
-	if err != nil {
-		return nil, fmt.Errorf("could not find payslips for payroll %q: %w", payrollID, err)
+		return nil, err
 	}
 
 	responsePayslips := make([]*payrollv1.Payslip, len(payslips))
