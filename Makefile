@@ -14,7 +14,7 @@ install:
 	  	chmod +x "${BUF_BIN}/buf"
 
 	@printf "\nInstalling linter...\n"
-	@go install -mod=mod github.com/golangci/golangci-lint/cmd/golangci-lint@v1.50.1
+	@go install -mod=mod github.com/golangci/golangci-lint/cmd/golangci-lint@v1.51.2
 
 	@printf "\nInstalling compile daemon...\n"
 	@go install -mod=readonly github.com/githubnemo/CompileDaemon@v1.4.0

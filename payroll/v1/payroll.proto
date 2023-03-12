@@ -13,8 +13,9 @@ service PayrollService {
 }
 
 message AddPayrollRequest {
-  string tenant_id = 1;
-  string payday = 2;
+  string payroll_id = 1;
+  string tenant_id = 2;
+  string payday = 3;
 }
 
 message AddPayrollResponse {

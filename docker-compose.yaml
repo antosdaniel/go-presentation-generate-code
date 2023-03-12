@@ -4,6 +4,8 @@ services:
     build:
       dockerfile: ./build/grpc/Dockerfile
       target: dev
+    environment:
+      DB_URL: "postgres://postgres:secret123@db:5432/payroll?sslmode=disable"
     depends_on:
       db:
         condition: service_healthy
