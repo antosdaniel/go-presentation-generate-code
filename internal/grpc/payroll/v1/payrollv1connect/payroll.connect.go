@@ -25,6 +25,25 @@ const (
 	PayrollServiceName = "payroll.v1.PayrollService"
 )
 
+// These constants are the fully-qualified names of the RPCs defined in this package. They're
+// exposed at runtime as Spec.Procedure and as the final two segments of the HTTP route.
+//
+// Note that these are different from the fully-qualified method names used by
+// google.golang.org/protobuf/reflect/protoreflect. To convert from these constants to
+// reflection-formatted method names, remove the leading slash and convert the remaining slash to a
+// period.
+const (
+	// PayrollServiceAddPayrollProcedure is the fully-qualified name of the PayrollService's AddPayroll
+	// RPC.
+	PayrollServiceAddPayrollProcedure = "/payroll.v1.PayrollService/AddPayroll"
+	// PayrollServiceAddPayslipProcedure is the fully-qualified name of the PayrollService's AddPayslip
+	// RPC.
+	PayrollServiceAddPayslipProcedure = "/payroll.v1.PayrollService/AddPayslip"
+	// PayrollServiceGetPayrollProcedure is the fully-qualified name of the PayrollService's GetPayroll
+	// RPC.
+	PayrollServiceGetPayrollProcedure = "/payroll.v1.PayrollService/GetPayroll"
+)
+
 // PayrollServiceClient is a client for the payroll.v1.PayrollService service.
 type PayrollServiceClient interface {
 	AddPayroll(context.Context, *connect_go.Request[v1.AddPayrollRequest]) (*connect_go.Response[v1.AddPayrollResponse], error)
@@ -44,17 +63,17 @@ func NewPayrollServiceClient(httpClient connect_go.HTTPClient, baseURL string, o
 	return &payrollServiceClient{
 		addPayroll: connect_go.NewClient[v1.AddPayrollRequest, v1.AddPayrollResponse](
 			httpClient,
-			baseURL+"/payroll.v1.PayrollService/AddPayroll",
+			baseURL+PayrollServiceAddPayrollProcedure,
 			opts...,
 		),
 		addPayslip: connect_go.NewClient[v1.AddPayslipRequest, v1.AddPayslipResponse](
 			httpClient,
-			baseURL+"/payroll.v1.PayrollService/AddPayslip",
+			baseURL+PayrollServiceAddPayslipProcedure,
 			opts...,
 		),
 		getPayroll: connect_go.NewClient[v1.GetPayrollRequest, v1.GetPayrollResponse](
 			httpClient,
-			baseURL+"/payroll.v1.PayrollService/GetPayroll",
+			baseURL+PayrollServiceGetPayrollProcedure,
 			opts...,
 		),
 	}
@@ -96,18 +115,18 @@ type PayrollServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewPayrollServiceHandler(svc PayrollServiceHandler, opts ...connect_go.HandlerOption) (string, http.Handler) {
 	mux := http.NewServeMux()
-	mux.Handle("/payroll.v1.PayrollService/AddPayroll", connect_go.NewUnaryHandler(
-		"/payroll.v1.PayrollService/AddPayroll",
+	mux.Handle(PayrollServiceAddPayrollProcedure, connect_go.NewUnaryHandler(
+		PayrollServiceAddPayrollProcedure,
 		svc.AddPayroll,
 		opts...,
 	))
-	mux.Handle("/payroll.v1.PayrollService/AddPayslip", connect_go.NewUnaryHandler(
-		"/payroll.v1.PayrollService/AddPayslip",
+	mux.Handle(PayrollServiceAddPayslipProcedure, connect_go.NewUnaryHandler(
+		PayrollServiceAddPayslipProcedure,
 		svc.AddPayslip,
 		opts...,
 	))
-	mux.Handle("/payroll.v1.PayrollService/GetPayroll", connect_go.NewUnaryHandler(
-		"/payroll.v1.PayrollService/GetPayroll",
+	mux.Handle(PayrollServiceGetPayrollProcedure, connect_go.NewUnaryHandler(
+		PayrollServiceGetPayrollProcedure,
 		svc.GetPayroll,
 		opts...,
 	))

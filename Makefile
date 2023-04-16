@@ -3,13 +3,15 @@ BUF_BIN := "/usr/local/bin"
 
 .PHONY: dev
 dev:
-	@docker compose down && docker compose up
+	@docker compose down
+	@make -s deps
+	@docker compose up
 
 .PHONY: install
 install:
 	@printf "Installing buf...\n"
 	# This works without `sudo` in Docker. If you want to run it locally, you probably will have to prefix each line with `sudo`.
-	rm -rf ${BUF_BIN}/buf && \
+	@rm -rf ${BUF_BIN}/buf && \
 		curl -sSL "https://github.com/bufbuild/buf/releases/download/v${BUF_VERSION}/buf-$$(uname -s)-$$(uname -m)" -o "${BUF_BIN}/buf" && \
 	  	chmod +x "${BUF_BIN}/buf"
 
@@ -23,6 +25,9 @@ install:
 	@go install -mod=readonly github.com/volatiletech/sqlboiler/v4@latest
 	@go install -mod=readonly github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-psql@latest
 
+	@printf "Installing gowrap...\n"
+	@go install -mod=readonly github.com/hexdigest/gowrap/cmd/gowrap
+
 .PHONY: lint
 lint:
 	@printf "Linting protos...\n"
@@ -30,6 +35,11 @@ lint:
 
 	@printf "Linting Go...\n"
 	@golangci-lint run
+
+.PHONY: deps
+deps:
+	@printf "Refreshing Go modules...\n"
+	@go mod tidy && go mod vendor
 
 .PHONY: generate
 generate:
@@ -39,8 +49,8 @@ generate:
 	@printf "Generating db models...\n"
 	@sqlboiler --config db/sqlboiler.toml psql
 
-	@printf "Refreshing Go modules...\n"
-	@go mod tidy && go mod vendor
+	@printf "go generate...\n"
+	@go generate ./...
 
 	@printf "Formatting files...\n"
 	@golangci-lint run --fix

@@ -3,7 +3,6 @@ package grpc
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/antosdaniel/go-presentation-generate-code/internal/db/models"
@@ -11,6 +10,13 @@ import (
 	connect_go "github.com/bufbuild/connect-go"
 	"github.com/google/uuid"
 )
+
+//go:generate gowrap gen -g -i PayrollServiceServer -t ./../../templates/log -o payrollServiceWithLogs.go
+type PayrollServiceServer interface {
+	AddPayroll(context.Context, *connect_go.Request[payrollv1.AddPayrollRequest]) (*connect_go.Response[payrollv1.AddPayrollResponse], error)
+	AddPayslip(context.Context, *connect_go.Request[payrollv1.AddPayslipRequest]) (*connect_go.Response[payrollv1.AddPayslipResponse], error)
+	GetPayroll(context.Context, *connect_go.Request[payrollv1.GetPayrollRequest]) (*connect_go.Response[payrollv1.GetPayrollResponse], error)
+}
 
 type payrollServiceServer struct {
 	payrollRepo payrollRepo
@@ -23,8 +29,6 @@ type payrollRepo interface {
 }
 
 func (s *payrollServiceServer) AddPayroll(ctx context.Context, request *connect_go.Request[payrollv1.AddPayrollRequest]) (*connect_go.Response[payrollv1.AddPayrollResponse], error) {
-	log.Printf("add payslip to payroll %q", request.Msg.Payday)
-
 	payday, err := time.Parse(time.DateOnly, request.Msg.Payday)
 	if err != nil {
 		return nil, fmt.Errorf("invalid payday: %w", err)
@@ -52,8 +56,6 @@ func (s *payrollServiceServer) AddPayroll(ctx context.Context, request *connect_
 }
 
 func (s *payrollServiceServer) AddPayslip(ctx context.Context, request *connect_go.Request[payrollv1.AddPayslipRequest]) (*connect_go.Response[payrollv1.AddPayslipResponse], error) {
-	log.Printf("add payslip to payroll %q", request.Msg.PayrollId)
-
 	payslipID := uuid.NewString()
 	err := s.payrollRepo.AddPayslip(
 		ctx,

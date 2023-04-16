@@ -1,0 +1,44 @@
+import (
+  "log"
+)
+
+{{ $decorator := (or .Vars.DecoratorName (printf "%sWithLog" .Interface.Name)) }}
+
+// {{$decorator}} implements {{.Interface.Type}} that is instrumented with logging
+type {{$decorator}} struct {
+  _base {{.Interface.Type}}
+}
+
+// New{{$decorator}} instruments an implementation of the {{.Interface.Type}} with simple logging
+func New{{$decorator}}(base {{.Interface.Type}}) {{$decorator}} {
+  return {{$decorator}}{_base: base}
+}
+
+{{range $method := .Interface.Methods}}
+  // {{$method.Name}} implements {{$.Interface.Type}}
+  func (_d {{$decorator}}) {{$method.Declaration}} {
+      {{- if $method.HasParams}}
+        _params := []interface{}{"{{$decorator}}: calling {{$method.Name}} with params:", {{$method.ParamsNames}} }
+        log.Println(_params...)
+      {{else}}
+        log.Println("{{$decorator}}: calling {{$method.Name}}")
+      {{end -}}
+      defer func() {
+        {{- if $method.HasResults}}
+          _results := []interface{}{"{{$decorator}}: {{$method.Name}} returned results:", {{$method.ResultsNames}} }
+          {{- if $method.ReturnsError}}
+            if err != nil {
+              log.Println(_results...)
+            } else {
+              log.Println(_results...)
+            }
+          {{else}}
+            log.Println(_results...)
+          {{end -}}
+        {{else}}
+          log.Println("{{$decorator}}: {{$method.Name}} finished")
+        {{end -}}
+      }()
+      {{ $method.Pass "_d._base." }}
+  }
+{{end}}
