@@ -6,19 +6,13 @@ import (
 	"time"
 
 	"github.com/antosdaniel/go-presentation-generate-code/internal/db/models"
-	payrollv1 "github.com/antosdaniel/go-presentation-generate-code/internal/grpc/payroll/v1"
+	"github.com/antosdaniel/go-presentation-generate-code/internal/grpc/payroll/payrollv1"
 	connect_go "github.com/bufbuild/connect-go"
 	"github.com/google/uuid"
 )
 
 //go:generate mockgen -source payrollService.go -destination mocks/mocks.go -package mocks
-
-//go:generate gowrap gen -g -i PayrollServiceServer -t ./../../templates/log -o payrollServiceWithLogs.go
-type PayrollServiceServer interface {
-	AddPayroll(context.Context, *connect_go.Request[payrollv1.AddPayrollRequest]) (*connect_go.Response[payrollv1.AddPayrollResponse], error)
-	AddPayslip(context.Context, *connect_go.Request[payrollv1.AddPayslipRequest]) (*connect_go.Response[payrollv1.AddPayslipResponse], error)
-	GetPayroll(context.Context, *connect_go.Request[payrollv1.GetPayrollRequest]) (*connect_go.Response[payrollv1.GetPayrollResponse], error)
-}
+//go:generate gowrap gen -g -p github.com/antosdaniel/go-presentation-generate-code/internal/grpc/payroll/payrollv1/payrollv1connect -i PayrollServiceHandler -t ./../../templates/log -o payrollServiceWithLogs.go
 
 type payrollServiceServer struct {
 	payrollRepo payrollRepo

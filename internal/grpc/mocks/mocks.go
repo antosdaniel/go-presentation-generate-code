@@ -10,78 +10,8 @@ import (
 	time "time"
 
 	models "github.com/antosdaniel/go-presentation-generate-code/internal/db/models"
-	payrollv1 "github.com/antosdaniel/go-presentation-generate-code/internal/grpc/payroll/v1"
-	connect "github.com/bufbuild/connect-go"
 	gomock "github.com/golang/mock/gomock"
 )
-
-// MockPayrollServiceServer is a mock of PayrollServiceServer interface.
-type MockPayrollServiceServer struct {
-	ctrl     *gomock.Controller
-	recorder *MockPayrollServiceServerMockRecorder
-}
-
-// MockPayrollServiceServerMockRecorder is the mock recorder for MockPayrollServiceServer.
-type MockPayrollServiceServerMockRecorder struct {
-	mock *MockPayrollServiceServer
-}
-
-// NewMockPayrollServiceServer creates a new mock instance.
-func NewMockPayrollServiceServer(ctrl *gomock.Controller) *MockPayrollServiceServer {
-	mock := &MockPayrollServiceServer{ctrl: ctrl}
-	mock.recorder = &MockPayrollServiceServerMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockPayrollServiceServer) EXPECT() *MockPayrollServiceServerMockRecorder {
-	return m.recorder
-}
-
-// AddPayroll mocks base method.
-func (m *MockPayrollServiceServer) AddPayroll(arg0 context.Context, arg1 *connect.Request[payrollv1.AddPayrollRequest]) (*connect.Response[payrollv1.AddPayrollResponse], error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddPayroll", arg0, arg1)
-	ret0, _ := ret[0].(*connect.Response[payrollv1.AddPayrollResponse])
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// AddPayroll indicates an expected call of AddPayroll.
-func (mr *MockPayrollServiceServerMockRecorder) AddPayroll(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddPayroll", reflect.TypeOf((*MockPayrollServiceServer)(nil).AddPayroll), arg0, arg1)
-}
-
-// AddPayslip mocks base method.
-func (m *MockPayrollServiceServer) AddPayslip(arg0 context.Context, arg1 *connect.Request[payrollv1.AddPayslipRequest]) (*connect.Response[payrollv1.AddPayslipResponse], error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddPayslip", arg0, arg1)
-	ret0, _ := ret[0].(*connect.Response[payrollv1.AddPayslipResponse])
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// AddPayslip indicates an expected call of AddPayslip.
-func (mr *MockPayrollServiceServerMockRecorder) AddPayslip(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddPayslip", reflect.TypeOf((*MockPayrollServiceServer)(nil).AddPayslip), arg0, arg1)
-}
-
-// GetPayroll mocks base method.
-func (m *MockPayrollServiceServer) GetPayroll(arg0 context.Context, arg1 *connect.Request[payrollv1.GetPayrollRequest]) (*connect.Response[payrollv1.GetPayrollResponse], error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetPayroll", arg0, arg1)
-	ret0, _ := ret[0].(*connect.Response[payrollv1.GetPayrollResponse])
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetPayroll indicates an expected call of GetPayroll.
-func (mr *MockPayrollServiceServerMockRecorder) GetPayroll(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPayroll", reflect.TypeOf((*MockPayrollServiceServer)(nil).GetPayroll), arg0, arg1)
-}
 
 // MockpayrollRepo is a mock of payrollRepo interface.
 type MockpayrollRepo struct {
