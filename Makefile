@@ -21,12 +21,15 @@ install:
 	@printf "\nInstalling compile daemon...\n"
 	@go install -mod=readonly github.com/githubnemo/CompileDaemon@v1.4.0
 
-	@printf "Installing sqlboiler...\n"
+	@printf "\nInstalling sqlboiler...\n"
 	@go install -mod=readonly github.com/volatiletech/sqlboiler/v4@latest
 	@go install -mod=readonly github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-psql@latest
 
-	@printf "Installing gowrap...\n"
-	@go install -mod=readonly github.com/hexdigest/gowrap/cmd/gowrap
+	@printf "\nInstalling gowrap...\n"
+	@go install -mod=readonly github.com/hexdigest/gowrap/cmd/gowrap@v1.3.2
+
+	@printf "\nInstalling mockgen...\n"
+	@go install -mod=readonly github.com/golang/mock/mockgen@v1.7.0-rc.1
 
 .PHONY: lint
 lint:
@@ -51,6 +54,8 @@ generate:
 
 	@printf "go generate...\n"
 	@go generate ./...
+
+	@make -s deps
 
 	@printf "Formatting files...\n"
 	@golangci-lint run --fix

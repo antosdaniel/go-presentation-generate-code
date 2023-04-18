@@ -11,6 +11,8 @@ import (
 	"github.com/google/uuid"
 )
 
+//go:generate mockgen -source payrollService.go -destination mocks/mocks.go -package mocks
+
 //go:generate gowrap gen -g -i PayrollServiceServer -t ./../../templates/log -o payrollServiceWithLogs.go
 type PayrollServiceServer interface {
 	AddPayroll(context.Context, *connect_go.Request[payrollv1.AddPayrollRequest]) (*connect_go.Response[payrollv1.AddPayrollResponse], error)
