@@ -1,6 +1,8 @@
 # Go Presentation: generate code
 
-Description: TODO
+Small gRPC service presenting concepts of code generation.
+
+[Link to presentation.](https://docs.google.com/presentation/d/1b7yRlaPA6v_wQaU6hZZ63QNUwp1kygF2gVuD7q1vroE/edit?usp=sharing)
 
 ## Quick start
 
