@@ -16,14 +16,14 @@ install:
 	  	chmod +x "${BUF_BIN}/buf"
 
 	@printf "\nInstalling linter...\n"
-	@go install -mod=mod github.com/golangci/golangci-lint/cmd/golangci-lint@v1.51.2
+	@go install -mod=readonly github.com/golangci/golangci-lint/cmd/golangci-lint@v1.51.2
 
 	@printf "\nInstalling compile daemon...\n"
 	@go install -mod=readonly github.com/githubnemo/CompileDaemon@v1.4.0
 
 	@printf "\nInstalling sqlboiler...\n"
-	@go install -mod=readonly github.com/volatiletech/sqlboiler/v4@latest
-	@go install -mod=readonly github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-psql@latest
+	@go install -mod=readonly github.com/volatiletech/sqlboiler/v4@v4.14.2
+	@go install -mod=readonly github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-psql@v4.14.2
 
 	@printf "\nInstalling gowrap...\n"
 	@go install -mod=readonly github.com/hexdigest/gowrap/cmd/gowrap@v1.3.2
