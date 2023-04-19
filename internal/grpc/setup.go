@@ -20,7 +20,7 @@ var port = getOptionalEnv("PORT", "8000")
 
 func New(db *sql.DB) *http.Server {
 	mux := http.NewServeMux()
-	payrollService := NewPayrollServiceHandlerWithLog(&payrollServiceServer{repos.NewPayrollRepo(db)})
+	payrollService := NewPayrollServiceHandlerWithLog(newWithAuth(&payrollServiceServer{repos.NewPayrollRepo(db)}))
 	path, handler := payrollv1connect.NewPayrollServiceHandler(payrollService)
 	mux.Handle(path, handler)
 
