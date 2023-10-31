@@ -1,4 +1,4 @@
-BUF_VERSION := "1.12.0"
+BUF_VERSION := "1.27.2"
 BUF_BIN := "/usr/local/bin"
 
 .PHONY: dev
@@ -16,20 +16,20 @@ install:
 	  	chmod +x "${BUF_BIN}/buf"
 
 	@printf "\nInstalling linter...\n"
-	@go install -mod=readonly github.com/golangci/golangci-lint/cmd/golangci-lint@v1.51.2
+	@go install -mod=readonly github.com/golangci/golangci-lint/cmd/golangci-lint@v1.55.1
 
 	@printf "\nInstalling compile daemon...\n"
 	@go install -mod=readonly github.com/githubnemo/CompileDaemon@v1.4.0
 
 	@printf "\nInstalling sqlboiler...\n"
-	@go install -mod=readonly github.com/volatiletech/sqlboiler/v4@v4.14.2
-	@go install -mod=readonly github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-psql@v4.14.2
+	@go install -mod=readonly github.com/volatiletech/sqlboiler/v4@v4.15.0
+	@go install -mod=readonly github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-psql@v4.15.0
 
 	@printf "\nInstalling gowrap...\n"
 	@go install -mod=readonly github.com/hexdigest/gowrap/cmd/gowrap@v1.3.2
 
 	@printf "\nInstalling mockgen...\n"
-	@go install -mod=readonly github.com/golang/mock/mockgen@v1.7.0-rc.1
+	@go install -mod=readonly go.uber.org/mock/mockgen@latest
 
 .PHONY: lint
 lint:
@@ -47,7 +47,7 @@ deps:
 .PHONY: generate
 generate:
 	@printf "Generating protos...\n"
-	@buf generate --template internal/grpc/buf.gen.yaml
+	@buf generate --template gen/grpc/buf.gen.yaml
 
 	@printf "Generating db models...\n"
 	@sqlboiler --config db/sqlboiler.toml psql

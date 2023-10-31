@@ -8,8 +8,8 @@ import (
 	"context"
 	"log"
 
-	"github.com/antosdaniel/go-presentation-generate-code/internal/grpc/payroll/payrollv1"
-	"github.com/antosdaniel/go-presentation-generate-code/internal/grpc/payroll/payrollv1/payrollv1connect"
+	"github.com/antosdaniel/go-presentation-generate-code/gen/grpc/payroll/payrollv1"
+	"github.com/antosdaniel/go-presentation-generate-code/gen/grpc/payroll/payrollv1/payrollv1connect"
 	connect_go "github.com/bufbuild/connect-go"
 )
 
@@ -18,8 +18,8 @@ type PayrollServiceHandlerWithLog struct {
 	_base payrollv1connect.PayrollServiceHandler
 }
 
-// NewPayrollServiceHandlerWithLog instruments an implementation of the payrollv1connect.PayrollServiceHandler with simple logging
-func NewPayrollServiceHandlerWithLog(base payrollv1connect.PayrollServiceHandler) PayrollServiceHandlerWithLog {
+// newPayrollServiceHandlerWithLog instruments an implementation of the payrollv1connect.PayrollServiceHandler with simple logging
+func newPayrollServiceHandlerWithLog(base payrollv1connect.PayrollServiceHandler) PayrollServiceHandlerWithLog {
 	return PayrollServiceHandlerWithLog{_base: base}
 }
 

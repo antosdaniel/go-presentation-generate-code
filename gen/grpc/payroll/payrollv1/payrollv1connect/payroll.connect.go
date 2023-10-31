@@ -7,7 +7,7 @@ package payrollv1connect
 import (
 	context "context"
 	errors "errors"
-	payrollv1 "github.com/antosdaniel/go-presentation-generate-code/internal/grpc/payroll/payrollv1"
+	payrollv1 "github.com/antosdaniel/go-presentation-generate-code/gen/grpc/payroll/payrollv1"
 	connect_go "github.com/bufbuild/connect-go"
 	http "net/http"
 	strings "strings"
@@ -114,23 +114,33 @@ type PayrollServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewPayrollServiceHandler(svc PayrollServiceHandler, opts ...connect_go.HandlerOption) (string, http.Handler) {
-	mux := http.NewServeMux()
-	mux.Handle(PayrollServiceAddPayrollProcedure, connect_go.NewUnaryHandler(
+	payrollServiceAddPayrollHandler := connect_go.NewUnaryHandler(
 		PayrollServiceAddPayrollProcedure,
 		svc.AddPayroll,
 		opts...,
-	))
-	mux.Handle(PayrollServiceAddPayslipProcedure, connect_go.NewUnaryHandler(
+	)
+	payrollServiceAddPayslipHandler := connect_go.NewUnaryHandler(
 		PayrollServiceAddPayslipProcedure,
 		svc.AddPayslip,
 		opts...,
-	))
-	mux.Handle(PayrollServiceGetPayrollProcedure, connect_go.NewUnaryHandler(
+	)
+	payrollServiceGetPayrollHandler := connect_go.NewUnaryHandler(
 		PayrollServiceGetPayrollProcedure,
 		svc.GetPayroll,
 		opts...,
-	))
-	return "/payroll.v1.PayrollService/", mux
+	)
+	return "/payroll.v1.PayrollService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case PayrollServiceAddPayrollProcedure:
+			payrollServiceAddPayrollHandler.ServeHTTP(w, r)
+		case PayrollServiceAddPayslipProcedure:
+			payrollServiceAddPayslipHandler.ServeHTTP(w, r)
+		case PayrollServiceGetPayrollProcedure:
+			payrollServiceGetPayrollHandler.ServeHTTP(w, r)
+		default:
+			http.NotFound(w, r)
+		}
+	})
 }
 
 // UnimplementedPayrollServiceHandler returns CodeUnimplemented from all methods.

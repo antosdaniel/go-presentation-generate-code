@@ -1,4 +1,4 @@
-GRPC localhost:8000/payroll.v1.PayrollService/AddPayroll
+GRPC {{host}}:{{port}}/payroll.v1.PayrollService/AddPayroll
 
 {
   "payroll_id": "806950d6-316b-41fb-9e62-a59b3aa952a9",
@@ -8,7 +8,7 @@ GRPC localhost:8000/payroll.v1.PayrollService/AddPayroll
 
 ###
 
-GRPC localhost:8000/payroll.v1.PayrollService/AddPayslip
+GRPC {{host}}:{{port}}/payroll.v1.PayrollService/AddPayslip
 
 {
   "payroll_id": "806950d6-316b-41fb-9e62-a59b3aa952a9",
@@ -18,7 +18,7 @@ GRPC localhost:8000/payroll.v1.PayrollService/AddPayslip
 
 ###
 
-GRPC localhost:8000/payroll.v1.PayrollService/GetPayroll
+GRPC {{host}}:{{port}}/payroll.v1.PayrollService/GetPayroll
 
 {
   "payroll_id": "806950d6-316b-41fb-9e62-a59b3aa952a9"

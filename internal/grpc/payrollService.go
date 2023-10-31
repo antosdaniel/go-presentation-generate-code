@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/antosdaniel/go-presentation-generate-code/gen/grpc/payroll/payrollv1"
 	"github.com/antosdaniel/go-presentation-generate-code/internal/db/models"
-	"github.com/antosdaniel/go-presentation-generate-code/internal/grpc/payroll/payrollv1"
 	connect_go "github.com/bufbuild/connect-go"
 	"github.com/google/uuid"
 )
 
 //go:generate mockgen -source payrollService.go -destination mocks/mocks.go -package mocks
-//go:generate gowrap gen -g -p github.com/antosdaniel/go-presentation-generate-code/internal/grpc/payroll/payrollv1/payrollv1connect -i PayrollServiceHandler -t ./../../templates/log -o payrollServiceWithLogs.go
+//go:generate gowrap gen -g -p ../../gen/grpc/payroll/payrollv1/payrollv1connect -i PayrollServiceHandler -t ./../../templates/log -o payrollServiceWithLogs.go
 
 type payrollServiceServer struct {
 	payrollRepo payrollRepo
