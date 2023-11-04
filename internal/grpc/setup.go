@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/antosdaniel/go-presentation-generate-code/gen/grpc/payroll/payrollv1/payrollv1connect"
+	"github.com/antosdaniel/go-presentation-generate-code/gen/api/grpc/payroll/v1/payrollv1connect"
 	"github.com/antosdaniel/go-presentation-generate-code/internal/db/repos"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"

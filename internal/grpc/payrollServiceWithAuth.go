@@ -3,8 +3,8 @@ package grpc
 import (
 	"context"
 
-	"github.com/antosdaniel/go-presentation-generate-code/gen/grpc/payroll/payrollv1"
-	"github.com/antosdaniel/go-presentation-generate-code/gen/grpc/payroll/payrollv1/payrollv1connect"
+	"github.com/antosdaniel/go-presentation-generate-code/gen/api/grpc/payroll/v1"
+	"github.com/antosdaniel/go-presentation-generate-code/gen/api/grpc/payroll/v1/payrollv1connect"
 	connect_go "github.com/bufbuild/connect-go"
 )
 

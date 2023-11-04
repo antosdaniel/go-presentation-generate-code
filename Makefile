@@ -28,11 +28,6 @@ install:
 	@printf "\nInstalling mockgen...\n"
 	@go install -mod=readonly go.uber.org/mock/mockgen@latest
 
-.PHONY: lint
-lint:
-	@printf "Linting protos...\n"
-	@buf lint --config gen/grpc/buf.yaml
-
 .PHONY: deps
 deps:
 	@printf "Refreshing Go modules...\n"
@@ -41,7 +36,7 @@ deps:
 .PHONY: generate
 generate:
 	@printf "Generating protos...\n"
-	@buf generate --template gen/grpc/buf.gen.yaml
+	@buf generate --template gen/buf.gen.yaml
 
 	@printf "Generating db models...\n"
 	@sqlboiler --config db/sqlboiler.toml psql

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/antosdaniel/go-presentation-generate-code/gen/grpc/payroll/payrollv1"
+	v1 "github.com/antosdaniel/go-presentation-generate-code/gen/api/grpc/payroll/v1"
 	"github.com/antosdaniel/go-presentation-generate-code/internal/db/models"
 	connect_go "github.com/bufbuild/connect-go"
 	"github.com/google/uuid"
@@ -13,7 +13,7 @@ import (
 
 //go:generate mockgen -source payrollService.go -destination mocks/mocks.go -package mocks
 
-//go:generate gowrap gen -g -p ../../gen/grpc/payroll/payrollv1/payrollv1connect -i PayrollServiceHandler -t ./../../templates/log -o payrollServiceWithLogs.go
+//go:generate gowrap gen -g -p ../../gen/api/grpc/payroll/v1/payrollv1connect -i PayrollServiceHandler -t ./../../templates/log -o payrollServiceWithLogs.go
 
 type payrollServiceServer struct {
 	payrollRepo payrollRepo
@@ -25,7 +25,7 @@ type payrollRepo interface {
 	Find(ctx context.Context, payrollID string) (*models.Payroll, models.PayslipSlice, error)
 }
 
-func (s *payrollServiceServer) AddPayroll(ctx context.Context, request *connect_go.Request[payrollv1.AddPayrollRequest]) (*connect_go.Response[payrollv1.AddPayrollResponse], error) {
+func (s *payrollServiceServer) AddPayroll(ctx context.Context, request *connect_go.Request[v1.AddPayrollRequest]) (*connect_go.Response[v1.AddPayrollResponse], error) {
 	payday, err := time.Parse(time.DateOnly, request.Msg.Payday)
 	if err != nil {
 		return nil, fmt.Errorf("invalid payday: %w", err)
@@ -45,14 +45,14 @@ func (s *payrollServiceServer) AddPayroll(ctx context.Context, request *connect_
 		return nil, err
 	}
 
-	return &connect_go.Response[payrollv1.AddPayrollResponse]{
-		Msg: &payrollv1.AddPayrollResponse{
+	return &connect_go.Response[v1.AddPayrollResponse]{
+		Msg: &v1.AddPayrollResponse{
 			PayrollId: id,
 		},
 	}, nil
 }
 
-func (s *payrollServiceServer) AddPayslip(ctx context.Context, request *connect_go.Request[payrollv1.AddPayslipRequest]) (*connect_go.Response[payrollv1.AddPayslipResponse], error) {
+func (s *payrollServiceServer) AddPayslip(ctx context.Context, request *connect_go.Request[v1.AddPayslipRequest]) (*connect_go.Response[v1.AddPayslipResponse], error) {
 	payslipID := uuid.NewString()
 	err := s.payrollRepo.AddPayslip(
 		ctx,
@@ -66,22 +66,22 @@ func (s *payrollServiceServer) AddPayslip(ctx context.Context, request *connect_
 		return nil, err
 	}
 
-	return &connect_go.Response[payrollv1.AddPayslipResponse]{
-		Msg: &payrollv1.AddPayslipResponse{
+	return &connect_go.Response[v1.AddPayslipResponse]{
+		Msg: &v1.AddPayslipResponse{
 			PayslipId: payslipID,
 		},
 	}, nil
 }
 
-func (s *payrollServiceServer) GetPayroll(ctx context.Context, request *connect_go.Request[payrollv1.GetPayrollRequest]) (*connect_go.Response[payrollv1.GetPayrollResponse], error) {
+func (s *payrollServiceServer) GetPayroll(ctx context.Context, request *connect_go.Request[v1.GetPayrollRequest]) (*connect_go.Response[v1.GetPayrollResponse], error) {
 	payroll, payslips, err := s.payrollRepo.Find(ctx, request.Msg.PayrollId)
 	if err != nil {
 		return nil, err
 	}
 
-	responsePayslips := make([]*payrollv1.Payslip, len(payslips))
+	responsePayslips := make([]*v1.Payslip, len(payslips))
 	for i, payslip := range payslips {
-		responsePayslips[i] = &payrollv1.Payslip{
+		responsePayslips[i] = &v1.Payslip{
 			Id:        payslip.ID,
 			TenantId:  payslip.TenantID,
 			PayrollId: payslip.PayrollID,
@@ -91,9 +91,9 @@ func (s *payrollServiceServer) GetPayroll(ctx context.Context, request *connect_
 		}
 	}
 
-	return &connect_go.Response[payrollv1.GetPayrollResponse]{
-		Msg: &payrollv1.GetPayrollResponse{
-			Payroll: &payrollv1.Payroll{
+	return &connect_go.Response[v1.GetPayrollResponse]{
+		Msg: &v1.GetPayrollResponse{
+			Payroll: &v1.Payroll{
 				Id:       payroll.ID,
 				TenantId: payroll.TenantID,
 				Payday:   payroll.Payday.Format(time.DateOnly),

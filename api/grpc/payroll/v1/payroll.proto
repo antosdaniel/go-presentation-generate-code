@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package payroll.v1;
 
-option go_package = "https://github.com/antosdaniel/go-presentation-generate-code/gen/grpc/payroll/payrollv1";
+option go_package = "https://github.com/antosdaniel/go-presentation-generate-code/gen/grpc/payroll/v1";
 
 // Service
 
