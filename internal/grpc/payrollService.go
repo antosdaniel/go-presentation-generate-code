@@ -12,6 +12,7 @@ import (
 )
 
 //go:generate mockgen -source payrollService.go -destination mocks/mocks.go -package mocks
+
 //go:generate gowrap gen -g -p ../../gen/grpc/payroll/payrollv1/payrollv1connect -i PayrollServiceHandler -t ./../../templates/log -o payrollServiceWithLogs.go
 
 type payrollServiceServer struct {

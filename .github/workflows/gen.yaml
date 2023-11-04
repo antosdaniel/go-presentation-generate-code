@@ -1,0 +1,36 @@
+name: Check generated files
+
+on: [push]
+
+jobs:
+  gen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Install tools
+        run: make install
+
+      - name: Generate code
+        run: |
+          # We need to start database and run migrations
+          docker compose up db -d
+          docker compose run migrate
+          # Regenerate code
+          make generate
+          # Cleanup
+          docker compose down
+
+      - name: Fail if there are changed files
+        run: |
+          CHANGED_FILES=$(git diff --name-only)
+          if [ -n "${CHANGED_FILES}" ]; then
+            echo "Your generated files are off. Don't forget to run 'make generate'. Files with changes:"
+            echo "${CHANGED_FILES}"
+            exit 1
+          fi
