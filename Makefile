@@ -15,9 +15,6 @@ install:
 		curl -sSL "https://github.com/bufbuild/buf/releases/download/v${BUF_VERSION}/buf-$$(uname -s)-$$(uname -m)" -o "${BUF_BIN}/buf" && \
 	  	chmod +x "${BUF_BIN}/buf"
 
-	@printf "\nInstalling linter...\n"
-	@go install -mod=readonly github.com/golangci/golangci-lint/cmd/golangci-lint@v1.55.1
-
 	@printf "\nInstalling compile daemon...\n"
 	@go install -mod=readonly github.com/githubnemo/CompileDaemon@v1.4.0
 
@@ -34,10 +31,7 @@ install:
 .PHONY: lint
 lint:
 	@printf "Linting protos...\n"
-	@buf lint --config internal/grpc/buf.yaml
-
-	@printf "Linting Go...\n"
-	@golangci-lint run
+	@buf lint --config gen/grpc/buf.yaml
 
 .PHONY: deps
 deps:
@@ -56,9 +50,6 @@ generate:
 	@go generate ./...
 
 	@make -s deps
-
-	@printf "Formatting files...\n"
-	@golangci-lint run --fix
 
 GRPC_BINARY := "bin/grpc"
 

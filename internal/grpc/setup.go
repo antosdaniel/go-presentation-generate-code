@@ -29,7 +29,7 @@ func New(db *sql.DB) *http.Server {
 	mux.Handle(path, handler)
 
 	addr := fmt.Sprintf("%s:%s", address, port)
-	return &http.Server{ //nolint:gosec
+	return &http.Server{
 		Addr:    addr,
 		Handler: h2c.NewHandler(mux, &http2.Server{}),
 	}
