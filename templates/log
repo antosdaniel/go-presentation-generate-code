@@ -1,4 +1,5 @@
 import (
+  "io"
   "log"
 )
 
@@ -6,12 +7,17 @@ import (
 
 // {{$decorator}} implements {{.Interface.Type}} that is instrumented with logging
 type {{$decorator}} struct {
+  _stdlog, _errlog *log.Logger
   _base {{.Interface.Type}}
 }
 
-// new{{$decorator}} instruments an implementation of the {{.Interface.Type}} with simple logging
-func new{{$decorator}}(base {{.Interface.Type}}) {{$decorator}} {
-  return {{$decorator}}{_base: base}
+// New{{$decorator}} instruments an implementation of the {{.Interface.Type}} with simple logging
+func new{{$decorator}}(base {{.Interface.Type}}, stdout, stderr io.Writer) {{$decorator}} {
+  return {{$decorator}}{
+    _base: base,
+    _stdlog: log.New(stdout, "", log.LstdFlags),
+    _errlog: log.New(stderr, "", log.LstdFlags),
+  }
 }
 
 {{range $method := .Interface.Methods}}
@@ -19,24 +25,24 @@ func new{{$decorator}}(base {{.Interface.Type}}) {{$decorator}} {
   func (_d {{$decorator}}) {{$method.Declaration}} {
       {{- if $method.HasParams}}
         _params := []interface{}{"{{$decorator}}: calling {{$method.Name}} with params:", {{$method.ParamsNames}} }
-        log.Println(_params...)
+        _d._stdlog.Println(_params...)
       {{else}}
-        log.Println("{{$decorator}}: calling {{$method.Name}}")
+        _d._stdlog.Println("{{$decorator}}: calling {{$method.Name}}")
       {{end -}}
       defer func() {
         {{- if $method.HasResults}}
           _results := []interface{}{"{{$decorator}}: {{$method.Name}} returned results:", {{$method.ResultsNames}} }
           {{- if $method.ReturnsError}}
             if err != nil {
-              log.Println(_results...)
+              _d._errlog.Println(_results...)
             } else {
-              log.Println(_results...)
+              _d._stdlog.Println(_results...)
             }
           {{else}}
-            log.Println(_results...)
+            _d._stdlog.Println(_results...)
           {{end -}}
         {{else}}
-          log.Println("{{$decorator}}: {{$method.Name}} finished")
+          _d._stdlog.Println("{{$decorator}}: {{$method.Name}} finished")
         {{end -}}
       }()
       {{ $method.Pass "_d._base." }}

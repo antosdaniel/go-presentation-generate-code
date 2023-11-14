@@ -3,6 +3,7 @@ package grpc
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
@@ -22,7 +23,10 @@ func New(db *sql.DB) *http.Server {
 	payrollService := newPayrollServiceHandlerWithLog(
 		newWithAuth(
 			&payrollServiceServer{repos.NewPayrollRepo(db)},
-		))
+		),
+		log.Writer(),
+		log.Writer(),
+	)
 	path, handler := payrollv1connect.NewPayrollServiceHandler(payrollService)
 
 	mux := http.NewServeMux()

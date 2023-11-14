@@ -6,33 +6,38 @@ package grpc
 
 import (
 	"context"
+	"io"
 	"log"
 
-	v1 "github.com/antosdaniel/go-presentation-generate-code/gen/api/grpc/payroll/v1"
 	"github.com/antosdaniel/go-presentation-generate-code/gen/api/grpc/payroll/v1/payrollv1connect"
 	connect_go "github.com/bufbuild/connect-go"
 )
 
 // PayrollServiceHandlerWithLog implements payrollv1connect.PayrollServiceHandler that is instrumented with logging
 type PayrollServiceHandlerWithLog struct {
-	_base payrollv1connect.PayrollServiceHandler
+	_stdlog, _errlog *log.Logger
+	_base            payrollv1connect.PayrollServiceHandler
 }
 
-// newPayrollServiceHandlerWithLog instruments an implementation of the payrollv1connect.PayrollServiceHandler with simple logging
-func newPayrollServiceHandlerWithLog(base payrollv1connect.PayrollServiceHandler) PayrollServiceHandlerWithLog {
-	return PayrollServiceHandlerWithLog{_base: base}
+// NewPayrollServiceHandlerWithLog instruments an implementation of the payrollv1connect.PayrollServiceHandler with simple logging
+func newPayrollServiceHandlerWithLog(base payrollv1connect.PayrollServiceHandler, stdout, stderr io.Writer) PayrollServiceHandlerWithLog {
+	return PayrollServiceHandlerWithLog{
+		_base:   base,
+		_stdlog: log.New(stdout, "", log.LstdFlags),
+		_errlog: log.New(stderr, "", log.LstdFlags),
+	}
 }
 
 // AddPayroll implements payrollv1connect.PayrollServiceHandler
 func (_d PayrollServiceHandlerWithLog) AddPayroll(ctx context.Context, pp1 *connect_go.Request[v1.AddPayrollRequest]) (pp2 *connect_go.Response[v1.AddPayrollResponse], err error) {
 	_params := []interface{}{"PayrollServiceHandlerWithLog: calling AddPayroll with params:", ctx, pp1}
-	log.Println(_params...)
+	_d._stdlog.Println(_params...)
 	defer func() {
 		_results := []interface{}{"PayrollServiceHandlerWithLog: AddPayroll returned results:", pp2, err}
 		if err != nil {
-			log.Println(_results...)
+			_d._errlog.Println(_results...)
 		} else {
-			log.Println(_results...)
+			_d._stdlog.Println(_results...)
 		}
 	}()
 	return _d._base.AddPayroll(ctx, pp1)
@@ -41,13 +46,13 @@ func (_d PayrollServiceHandlerWithLog) AddPayroll(ctx context.Context, pp1 *conn
 // AddPayslip implements payrollv1connect.PayrollServiceHandler
 func (_d PayrollServiceHandlerWithLog) AddPayslip(ctx context.Context, pp1 *connect_go.Request[v1.AddPayslipRequest]) (pp2 *connect_go.Response[v1.AddPayslipResponse], err error) {
 	_params := []interface{}{"PayrollServiceHandlerWithLog: calling AddPayslip with params:", ctx, pp1}
-	log.Println(_params...)
+	_d._stdlog.Println(_params...)
 	defer func() {
 		_results := []interface{}{"PayrollServiceHandlerWithLog: AddPayslip returned results:", pp2, err}
 		if err != nil {
-			log.Println(_results...)
+			_d._errlog.Println(_results...)
 		} else {
-			log.Println(_results...)
+			_d._stdlog.Println(_results...)
 		}
 	}()
 	return _d._base.AddPayslip(ctx, pp1)
@@ -56,13 +61,13 @@ func (_d PayrollServiceHandlerWithLog) AddPayslip(ctx context.Context, pp1 *conn
 // GetPayroll implements payrollv1connect.PayrollServiceHandler
 func (_d PayrollServiceHandlerWithLog) GetPayroll(ctx context.Context, pp1 *connect_go.Request[v1.GetPayrollRequest]) (pp2 *connect_go.Response[v1.GetPayrollResponse], err error) {
 	_params := []interface{}{"PayrollServiceHandlerWithLog: calling GetPayroll with params:", ctx, pp1}
-	log.Println(_params...)
+	_d._stdlog.Println(_params...)
 	defer func() {
 		_results := []interface{}{"PayrollServiceHandlerWithLog: GetPayroll returned results:", pp2, err}
 		if err != nil {
-			log.Println(_results...)
+			_d._errlog.Println(_results...)
 		} else {
-			log.Println(_results...)
+			_d._stdlog.Println(_results...)
 		}
 	}()
 	return _d._base.GetPayroll(ctx, pp1)
