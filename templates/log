@@ -1,7 +1,4 @@
-import (
-  "io"
-  "log"
-)
+{{.Import}}
 
 {{ $decorator := (or .Vars.DecoratorName (printf "%sWithLog" .Interface.Name)) }}
 
