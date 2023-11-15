@@ -10,7 +10,8 @@ FROM golang:1.20 as dev
 WORKDIR /src/
 COPY --from=base /src/ .
 
-RUN make install
+RUN --mount=type=cache,target=${GOPATH}/pkg/mod/\
+    make install
 
 CMD ["make", "start-grpc"]
 
